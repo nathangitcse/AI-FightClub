@@ -33,6 +33,8 @@ su27Speed = 100 # set speed of su-27 jet
 su27_Heading = 270 # set initial heading of su-27 jet, dir by angle.
 su27x, su27y = WIDTH // 4, HEIGHT // 2 # set initial position of su-27 jet
 
+
+
 GameRunning = True
 while GameRunning:
     dt =clock.tick(60) / 1000.0 # limit the game to 60 frames per second and get the time since the last frame in seconds
@@ -52,10 +54,14 @@ while GameRunning:
     su27x = su27x+ math.cos(su27_rad) * (su27Speed * dt) # how much of that angle points in x direction, multiply by speed and time to get distance moved in x direction.
     su27y = su27y+ math.sin(su27_rad) * (su27Speed * dt) # how much of that angle points in y direction, multiply by speed and time to get distance moved in y direction.
 
+    #Rotate jets to match heading
+    f18rotated = pygame.transform.rotate(f18Jet, -f18_Heading-90) # rotate f18 jet to match heading
+    su27rotated = pygame.transform.rotate(su27Jet, -su27_Heading-90) # rotate su-27 jet to match heading
+
     #bilt top left conner of window.
     window.blit(background, (0, 0)) # draw background on window
-    window.blit(f18Jet, (f18x, f18y)) # draw f18 jet on window
-    window.blit(su27Jet, (su27x, su27y)) # draw su-27 jet on window
+    window.blit(f18rotated, (f18x, f18y)) # draw f18 jet on window
+    window.blit(su27rotated, (su27x, su27y)) # draw su-27 jet on window
     pygame.display.flip() # update the display
 
 pygame.quit() # quit pygame when the game loop ends
