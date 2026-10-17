@@ -65,6 +65,22 @@ su27Speed = 100
 su27Heading = 90
 su27TurningSpeed = 45
 su27x, su27y = WIDTH // 4, HEIGHT // 2
+# list of (x,y) positions for the trail behind the jets
+TRAILMAXLENGTH = 120 # max number of positions to keep in the trail
+TRAILWIDTH = 4 # width of the trail lines
+f18Trail = []
+f18Trail.append((f18x, f18y))
+len(f18Trail)
+f18Trail.pop(0) # remove the oldest position from the trail
+
+su27Trail = []
+su27Trail.append((su27x, su27y))
+len(su27Trail)
+su27Trail.pop(0) # remove the oldest position from the trail
+
+#Colors
+BLUE = (80,160,255)
+RED = (255,80,80)
 
 gameRunning = True
 while gameRunning:
@@ -85,6 +101,10 @@ while gameRunning:
     f18Heading = turnTowards(f18Heading, f18TargetHeading, f18TurningSpeed, dt)
     f18Heading = f18Heading % 360
 
+    f18Trail.append((f18x, f18y))
+    if len(f18Trail) > TRAILMAXLENGTH:
+        f18Trail.pop(0)
+
     # split heading into x and y parts, times distance this frame
     f18Rad = math.radians(f18Heading)
     f18x = f18x+ math.cos(f18Rad) * (f18Speed * dt)
@@ -98,6 +118,9 @@ while gameRunning:
     su27Heading = turnTowards(su27Heading,su27TargetHeading,su27TurningSpeed, dt)
     su27Heading = su27Heading % 360
 
+    su27Trail.append((su27x, su27y))
+    if len(su27Trail) > TRAILMAXLENGTH:
+        su27Trail.pop(0)
     su27Rad = math.radians(su27Heading)
     su27x = su27x+ math.cos(su27Rad) * (su27Speed * dt)
     su27y = su27y+ math.sin(su27Rad) * (su27Speed * dt)
@@ -111,6 +134,13 @@ while gameRunning:
 
     # Draw: background first, then jets on top
     window.blit(background, (0, 0))
+
+    if (len(f18Trail) > 1) and (len(su27Trail) > 1):
+        pygame.draw.lines(window, BLUE, False, f18Trail, TRAILWIDTH) # draw f18 trail
+        pygame.draw.lines(window, RED, False, su27Trail, TRAILWIDTH) # draw su27 trail
+    else:
+        continue 
+
     window.blit(f18Rotated, f18Rect)
     window.blit(su27Rotated, su27Rect)
     pygame.display.flip() # show the new frame
