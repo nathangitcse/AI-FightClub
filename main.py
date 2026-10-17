@@ -65,22 +65,25 @@ su27Speed = 100
 su27Heading = 90
 su27TurningSpeed = 45
 su27x, su27y = WIDTH // 4, HEIGHT // 2
+
 # list of (x,y) positions for the trail behind the jets
 TRAILMAXLENGTH = 120 # max number of positions to keep in the trail
 TRAILWIDTH = 4 # width of the trail lines
+
 f18Trail = []
 f18Trail.append((f18x, f18y))
-len(f18Trail)
 f18Trail.pop(0) # remove the oldest position from the trail
 
 su27Trail = []
 su27Trail.append((su27x, su27y))
-len(su27Trail)
 su27Trail.pop(0) # remove the oldest position from the trail
 
 #Colors
 BLUE = (80,160,255)
 RED = (255,80,80)
+
+#Aim Lazer
+LAZERLENGTH = 120
 
 gameRunning = True
 while gameRunning:
@@ -132,15 +135,22 @@ while gameRunning:
     su27Rotated = pygame.transform.rotate(su27Jet, -su27Heading-90)
     su27Rect = su27Rotated.get_rect(center=(su27x, su27y))
 
+    #lazer aim line
+    f18LazerEndX = f18x + math.cos(f18Rad) * LAZERLENGTH
+    f18LazerEndY = f18y + math.sin(f18Rad) * LAZERLENGTH
+    su27LazerEndX = su27x + math.cos(su27Rad) * LAZERLENGTH
+    su27LazerEndY = su27y + math.sin(su27Rad) * LAZERLENGTH
+    
+
     # Draw: background first, then jets on top
     window.blit(background, (0, 0))
 
     if (len(f18Trail) > 1) and (len(su27Trail) > 1):
         pygame.draw.lines(window, BLUE, False, f18Trail, TRAILWIDTH) # draw f18 trail
         pygame.draw.lines(window, RED, False, su27Trail, TRAILWIDTH) # draw su27 trail
-    else:
-        continue 
-
+        
+    pygame.draw.line(window, BLUE, (f18x, f18y), (f18LazerEndX, f18LazerEndY), 3)
+    pygame.draw.line(window, RED, (su27x, su27y), (su27LazerEndX, su27LazerEndY), 3)
     window.blit(f18Rotated, f18Rect)
     window.blit(su27Rotated, su27Rect)
     pygame.display.flip() # show the new frame
