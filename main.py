@@ -47,7 +47,7 @@ f18Jet = f18Jet.convert_alpha()
 f18Jet = pygame.transform.smoothscale(f18Jet, (80, 120)) # convert image to support transparency and scale it
 
 f18Speed = 100 # set speed of f18 jet
-f18_Heading = 90 # set initial heading of f18 jet, dir by angle.
+f18Heading = 90 # set initial heading of f18 jet, dir by angle.
 f18TurningSpeed = 45 # set turning speed of f18 jet
 f18x, f18y = WIDTH // 2, HEIGHT // 2 # set initial position of f18 jet
 
@@ -57,19 +57,19 @@ su27Jet = su27Jet.convert_alpha()# convert image to support transparency and sca
 su27Jet = pygame.transform.smoothscale(su27Jet, (80, 120)) 
 
 su27Speed = 100 # set speed of su-27 jet
-su27_Heading = 90 # set initial heading of su-27 jet, dir by angle.
+su27Heading = 90 # set initial heading of su-27 jet, dir by angle.
 su27TurningSpeed = 45 # set turning speed of su-27 jet
 su27x, su27y = WIDTH // 4, HEIGHT // 2 # set initial position of su-27 jet
 
-GameRunning = True
-while GameRunning:
+gameRunning = True
+while gameRunning:
     dt =clock.tick(60) / 1000.0 # limit the game to 60 frames per second and get the time since the last frame in seconds
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            GameRunning = False
+            gameRunning = False
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
-                GameRunning = False
+                gameRunning = False
 
     #Jet movement
     # Find where su27 is in relation to f18, and set the heading of f18 to point towards su27.
@@ -77,32 +77,31 @@ while GameRunning:
     f18dy = su27y - f18y
     f18TargetHeading = math.degrees(math.atan2(f18dy,f18dx))
     f18TargetHeading = f18TargetHeading % 360
-    f18_Heading = turnTowards(f18_Heading, f18TargetHeading, f18TurningSpeed, dt) # update heading of f18 jet based on turning speed and time since last frame
+    f18Heading = turnTowards(f18Heading, f18TargetHeading, f18TurningSpeed, dt) # update heading of f18 jet based on turning speed and time since last frame
 
-    f18_Heading = f18_Heading % 360 # keep heading between 0 and 360 degrees
+    f18Heading = f18Heading % 360 # keep heading between 0 and 360 degrees
 
-    f18_rad = math.radians(f18_Heading) # convert heading to radians
-    f18x = f18x+ math.cos(f18_rad) * (f18Speed * dt) # how much of that angle points in x direction, multiply by speed and time to get distance moved in x direction.
-    f18y = f18y+ math.sin(f18_rad) * (f18Speed * dt) # how much of that angle points in y direction, multiply by speed and time to get distance moved in y direction.
+    f18Rad = math.radians(f18Heading) # convert heading to radians
+    f18x = f18x+ math.cos(f18Rad) * (f18Speed * dt) # how much of that angle points in x direction, multiply by speed and time to get distance moved in x direction.
+    f18y = f18y+ math.sin(f18Rad) * (f18Speed * dt) # how much of that angle points in y direction, multiply by speed and time to get distance moved in y direction.
     
-    su27_Heading = su27_Heading + su27TurningSpeed * dt # update heading of su-27 jet based on turning speed and time since last frame
-    su27_Heading = su27_Heading % 360 # keep heading between 0 and 360 degrees
+    su27Heading = su27Heading + su27TurningSpeed * dt # update heading of su-27 jet based on turning speed and time since last frame
+    su27Heading = su27Heading % 360 # keep heading between 0 and 360 degrees
 
-    su27_rad = math.radians(su27_Heading) # convert heading to radians
-    su27x = su27x+ math.cos(su27_rad) * (su27Speed * dt) # how much of that angle points in x direction, multiply by speed and time to get distance moved in x direction.
-    su27y = su27y+ math.sin(su27_rad) * (su27Speed * dt) # how much of that angle points in y direction, multiply by speed and time to get distance moved in y direction.
+    su27Rad = math.radians(su27Heading) # convert heading to radians
+    su27x = su27x+ math.cos(su27Rad) * (su27Speed * dt) # how much of that angle points in x direction, multiply by speed and time to get distance moved in x direction.
+    su27y = su27y+ math.sin(su27Rad) * (su27Speed * dt) # how much of that angle points in y direction, multiply by speed and time to get distance moved in y direction.
 
     #Rotate jets to match heading
-    f18rotated = pygame.transform.rotate(f18Jet, -f18_Heading-90) # rotate f18 jet to match heading
-    f18_rect = f18rotated.get_rect(center=(f18x, f18y)) # get the center of the rotated f18 jet
-    su27rotated = pygame.transform.rotate(su27Jet, -su27_Heading-90) # rotate su-27 jet to match heading
-    su27_rect = su27rotated.get_rect(center=(su27x, su27y)) # get the center of the rotated su-27 jet
-
+    f18Rotated = pygame.transform.rotate(f18Jet, -f18Heading-90) # rotate f18 jet to match heading
+    f18Rect = f18Rotated.get_rect(center=(f18x, f18y)) # get the center of the rotated f18 jet
+    su27Rotated = pygame.transform.rotate(su27Jet, -su27Heading-90) # rotate su-27 jet to match heading
+    su27Rect = su27Rotated.get_rect(center=(su27x, su27y)) # get the center of the rotated su-27 jet
 
     #bilt top left conner of window.
     window.blit(background, (0, 0)) # draw background on window
-    window.blit(f18rotated, f18_rect) # draw f18 jet on window
-    window.blit(su27rotated, su27_rect) # draw su-27 jet on window
+    window.blit(f18Rotated, f18Rect) # draw f18 jet on window
+    window.blit(su27Rotated, su27Rect) # draw su-27 jet on window
     pygame.display.flip() # update the display
 
 pygame.quit() # quit pygame when the game loop ends
